@@ -29,6 +29,7 @@ services:
       - zookeeper:zookeeper
       - kafka:kafka
   php:
+    container_name: chronos-pipeline_php_1
     build:
       context:
         ./php
