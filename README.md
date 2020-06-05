@@ -6,9 +6,13 @@ Sample messaging application
 Tech stack:
 
 Symfony5
+
 PipelineDB
+
 PostgreSQL11
+
 Kafka
+
 ZooKeeper
 
 The link to the e-book will be published soon on BookBoon.com (r) website
