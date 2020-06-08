@@ -18,12 +18,16 @@ RUN git clone --depth 1 --branch v1.4.2 https://github.com/edenhill/librdkafka.g
     && make \
     && make install
 
+# PGSQL Extension
+RUN apk add postgresql-dev
+RUN docker-php-ext-install pdo_pgsql
+
 # Composer installation
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer;
 
 # Instruct pecl to install rdkafka
 RUN pecl channel-update pecl.php.net \
-    && pecl install rdkafka-4.0.3 \
+    && pecl install rdkafka-3.0.3 \
     && docker-php-ext-enable rdkafka \
     && rm -rf /librdkafka \
     && apk del $BUILD_DEPS

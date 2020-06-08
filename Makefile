@@ -7,6 +7,7 @@ install:
 	@echo "Building Docker Containers..."
 	docker-compose up -d --build;
 	docker exec -it chronos-pipeline_php_1 ./start.sh;
+	docker exec -it chronos-pipeline_pipelinedb_1 psql -U pipeline -c "CREATE DATABASE postgres ENCODING 'LATIN1' TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C';";
 
 clean:
 	@echo "Cleaning Docker Containers..."
