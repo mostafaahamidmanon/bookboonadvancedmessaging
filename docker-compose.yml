@@ -1,9 +1,12 @@
-version: '3.1'
+version: '3.8'
+
 services:
+    
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+      
   kafka:
     image: wurstmeister/kafka
     ports:
@@ -12,6 +15,7 @@ services:
       - ./env/kafka.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      
   pipelinedb:
     image: tkanos/pipelinedb_kafka
     ports:
@@ -19,6 +23,7 @@ services:
     links:
       - zookeeper
       - kafka
+      
   kafka-manager:
     image: dockerkafka/kafka-manager
     env_file:
@@ -28,6 +33,7 @@ services:
     links:
       - zookeeper:zookeeper
       - kafka:kafka
+      
   php:
     container_name: chronos-pipeline_php_1
     build:
