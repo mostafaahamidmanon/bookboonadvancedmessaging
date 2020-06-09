@@ -1,4 +1,4 @@
-ramework:
+framework:
   messenger:
     failure_transport: failed
 
