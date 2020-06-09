@@ -1,6 +1,6 @@
 {
-    "brick/math": {
-        "version": "0.8.15"
+    "bunny/bunny": {
+        "version": "v0.4.2"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -81,6 +81,61 @@
     "doctrine/sql-formatter": {
         "version": "1.1.0"
     },
+    "enqueue/amqp-bunny": {
+        "version": "0.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.7",
+            "ref": "2ef9206636a23f2c50936de195f6bc54247dea65"
+        }
+    },
+    "enqueue/amqp-tools": {
+        "version": "0.10.0"
+    },
+    "enqueue/async-event-dispatcher": {
+        "version": "0.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.9",
+            "ref": "5a6f3bb8af169c434797b6ee623a5ea3dc64b86c"
+        },
+        "files": [
+            "config/packages/enqueue_async_event_dispatcher.yaml"
+        ]
+    },
+    "enqueue/dsn": {
+        "version": "0.10.1"
+    },
+    "enqueue/enqueue": {
+        "version": "0.10.1"
+    },
+    "enqueue/enqueue-bundle": {
+        "version": "0.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.9",
+            "ref": "c6ec89b63f963d10ad0d7a7bea170359c119c8bc"
+        },
+        "files": [
+            "config/packages/enqueue.yaml",
+            "config/packages/test/enqueue.yaml"
+        ]
+    },
+    "enqueue/null": {
+        "version": "0.10.1"
+    },
+    "enqueue/rdkafka": {
+        "version": "0.8",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.8",
+            "ref": "3d0d8d8eb4c64d9ecb4a8349316e36deacf2ed48"
+        }
+    },
     "laminas/laminas-code": {
         "version": "3.4.1"
     },
@@ -114,11 +169,14 @@
     "psr/log": {
         "version": "1.1.3"
     },
-    "ramsey/collection": {
-        "version": "1.0.1"
+    "queue-interop/amqp-interop": {
+        "version": "0.8.1"
+    },
+    "queue-interop/queue-interop": {
+        "version": "0.8.0"
     },
     "ramsey/uuid": {
-        "version": "4.0.1"
+        "version": "3.9.3"
     },
     "ramsey/uuid-doctrine": {
         "version": "1.3",
@@ -132,6 +190,12 @@
             "config/packages/ramsey_uuid_doctrine.yaml"
         ]
     },
+    "react/event-loop": {
+        "version": "v1.1.1"
+    },
+    "react/promise": {
+        "version": "v2.8.0"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -143,6 +207,15 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "sroze/messenger-enqueue-transport": {
+        "version": "0.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.1",
+            "ref": "9a7119f609b576a30dbf03e4fe44212388e96ea1"
+        }
     },
     "symfony/amqp-messenger": {
         "version": "v5.1.0"
@@ -255,6 +328,9 @@
         "files": [
             "config/packages/messenger.yaml"
         ]
+    },
+    "symfony/options-resolver": {
+        "version": "v5.1.0"
     },
     "symfony/orm-pack": {
         "version": "v1.0.8"
