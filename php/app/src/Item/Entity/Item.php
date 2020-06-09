@@ -27,28 +27,28 @@ class Item {
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator")
      * 
-     * @var UuidInteface $correlationId
+     * @property UuidInteface $correlationId
      */
     private UuidInterface $correlationId;
     
     /**
      *
      * @ORM\Column(type="string", length=255)
-     * @var string $arrivalTime
+     * @property string $arrivalTime
      */
     private string $arrivalTimestamp;
     
     /**
      * 
      * @ORM\Column(type="string", length=255)
-     * @var string $itemName 
+     * @property string $itemName 
      */
     private string $itemName;
     
     /**
      *
      * @ORM\Column(type="text")
-     * @var string $itemDetails
+     * @property string $itemDetails
      */
     private string $itemDetails;
     
