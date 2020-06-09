@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Tests\Item\Middleware;
+namespace App\Tests\Infrastructure;
 
 use App\Tests\Infrastructure\AbstractTestCase;
 use Enqueue\AsyncEventDispatcher\AsyncListener;
@@ -18,11 +18,11 @@ use Enqueue\AsyncEventDispatcher\AsyncListener;
  * @author mosta <info@manonworld.de>
  */
 class EnqueueTransportTest extends AbstractTestCase {
-    
 
     public function testIfEnqueueAsyncListenerIsLaunced()
     {
-        $transport = parent::$kernel->getContainer()->get('enqueue.events.async_listener');
+        $transport = parent::$kernel->getContainer()
+            ->get('enqueue.events.async_listener');
         
         $this->assertTrue($transport instanceof AsyncListener);
     }
