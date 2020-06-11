@@ -10,10 +10,15 @@ namespace App\Item\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * Item entity
  *
+ * @Serializer\XmlRoot("item")
+ * @Hateoas\Relation("self", href = "expr('/' ~ object.getCorrelationId())")
+ * 
  * @ORM\Entity(repositoryClass="App\Item\Repository\ItemRepository")
  * @ORM\Table(name="item")
  * 

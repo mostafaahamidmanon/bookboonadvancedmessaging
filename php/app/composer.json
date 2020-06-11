@@ -10,6 +10,7 @@
         "enqueue/async-event-dispatcher": "^0.10.1",
         "enqueue/enqueue-bundle": "^0.10.1",
         "enqueue/rdkafka": "^0.10.1",
+        "fzaninotto/faker": "^1.9",
         "jms/serializer": "^3.7",
         "ramsey/uuid-doctrine": "^1.6",
         "sensio/framework-extra-bundle": "^5.5",
@@ -22,9 +23,13 @@
         "symfony/messenger": "5.1.*",
         "symfony/orm-pack": "^1.0",
         "symfony/process": "5.1.*",
-        "symfony/yaml": "5.1.*"
+        "symfony/yaml": "5.1.*",
+        "willdurand/hateoas": "^3.6"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "symfony/browser-kit": "5.1.*",
+        "symfony/css-selector": "5.1.*",
         "symfony/maker-bundle": "^1.19",
         "symfony/phpunit-bridge": "^5.1"
     },

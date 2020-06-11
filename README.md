@@ -27,7 +27,15 @@ make install
 Point your browser to ``` https://manondomain.wip:8000/ ```
 
 
+
 Destruction
 --------------
 
 make clean
+
+
+
+Testing
+---------
+
+make test

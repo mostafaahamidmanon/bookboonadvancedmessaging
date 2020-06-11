@@ -14,13 +14,26 @@ clean:
 	docker exec -it chronos-pipeline_php_1 ./stop.sh;
 	docker-compose down;
 
+migrate:
+	@echo "Migrating the Database...";
+	docker exec -it chronos-pipeline_php_1 bin/console doctrine:migrations:migrate;
+
+seed:
+	@echo "Seeding Data...";
+	@docker exec -it chronos-pipeline_php_1 bin/console doctrine:fixtures:load --group=item;
+
+test:
+	@echo "Running Tests...";
+	@docker exec -it chronos-pipeline_php_1 bin/phpunit
+
 default:
 	@echo ""
 	@echo ""
 	@echo "These options are available:"
 	@echo ""
 	@echo ""
-	@echo "1. make install"
-	@echo "2. make clean"
+	@echo "1. make install (Installs the Application)"
+	@echo "2. make clean (Uninstalls the Application)"
+	@echo "3. make seed (Seed the Database using Fixtures)"
 	@echo ""
 	@echo ""
