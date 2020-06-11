@@ -14,7 +14,7 @@ use App\Item\Entity\Item;
 
 /**
  * The item repository
- *
+ * 
  * @author mosta <info@manonworld.de>
  */
 class ItemRepository extends ServiceEntityRepository {

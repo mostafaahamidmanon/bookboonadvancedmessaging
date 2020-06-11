@@ -10,6 +10,7 @@ namespace App\Item\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+
 /**
  * Item entity
  *

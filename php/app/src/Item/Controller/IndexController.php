@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Item\Middleware\Command\ItemsCommand;
 
 /**
  * The Main and Only Controller for the Test Application
@@ -23,19 +24,27 @@ class IndexController extends AbstractController
     
     /**
      *
-     * @var RequestStack $request
+     * @property RequestStack $request
      */
     private RequestStack $request;
+    
+    /**
+     *
+     * @property ItemsCommand $command
+     */
+    private ItemsCommand $command;
     
     /**
      * 
      * New Instance
      * 
      * @param RequestStack $request
+     * @param ItemsCommand $command
      */
-    public function __construct(RequestStack $request)
+    public function __construct(RequestStack $request, ItemsCommand $command)
     {
-        $this->request = $request;
+        $this->request  = $request;
+        $this->command  = $command;
     }
     
     /**
@@ -47,55 +56,7 @@ class IndexController extends AbstractController
      */
     public function index()
     {
-        return $this->json(['index' => $this->request->getCurrentRequest()]);
-    }
-    
-    /**
-     * 
-     * Adds an item
-     * 
-     * @Route("/", methods={"POST"})
-     * @return JsonResponse
-     */
-    public function add()
-    {
-        return $this->json(['add' => $this->request->getCurrentRequest()]);
-    }
-    
-    /**
-     * 
-     * Gets an item
-     * 
-     * @Route("/{id}", methods={"GET"})
-     * @return JsonResponse
-     */
-    public function find(UuidInterface $id)
-    {
-        return $this->json(['find' => 'data']);
-    }
-    
-    /**
-     * 
-     * Updates an item
-     * 
-     * @Route("/{id}", methods={"PUT"})
-     * @return JsonResponse
-     */
-    public function update(UuidInterface $id)
-    {
-        return $this->json(['update' => $id]);
-    }
-    
-    /**
-     * 
-     * Deletes an item
-     * 
-     * @Route("/{id}", methods={"DELETE"})
-     * @return JsonResponse
-     */
-    public function delete(UuidInterface $id)
-    {
-        return $this->json(['delete' => $id]);
+        return $this->json(['index' => $this->command->getAll()]);
     }
     
 }

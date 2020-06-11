@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Item\Middlewares;
+namespace App\Item\Middleware;
 
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
