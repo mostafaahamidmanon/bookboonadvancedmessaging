@@ -52,7 +52,6 @@ class IndexController extends AbstractController
      * 
      * @param RequestStack $request
      * @param ItemsCommand $command
-     * @param Response $response
      */
     public function __construct(
         RequestStack $request,
@@ -68,7 +67,7 @@ class IndexController extends AbstractController
      * Lists items
      * 
      * @Route("/", methods={"GET"})
-     * @return JsonResponse
+     * @return Response
      */
     public function index()
     {
