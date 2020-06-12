@@ -22,7 +22,11 @@ The link to the e-book will be published soon on BookBoon.com (r) website
 Installation
 --------------
 
-make install
+``` make install ```
+
+``` make migrate ```
+
+``` make seed ```
 
 Point your browser to ``` https://manondomain.wip:8000/ ```
 
@@ -31,11 +35,11 @@ Point your browser to ``` https://manondomain.wip:8000/ ```
 Destruction
 --------------
 
-make clean
+``` make clean ```
 
 
 
 Testing
 ---------
 
-make test
+``` make test ```

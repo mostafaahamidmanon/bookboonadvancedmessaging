@@ -22,6 +22,10 @@ RUN git clone --depth 1 --branch v1.4.2 https://github.com/edenhill/librdkafka.g
 RUN apk add postgresql-dev
 RUN docker-php-ext-install pdo_pgsql
 
+# Messenger Performance Specific Extensions
+RUN apk add --update icu-dev
+RUN docker-php-ext-install intl
+
 # Composer installation
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer;
 

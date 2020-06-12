@@ -16,6 +16,8 @@ use App\Item\Middleware\Command\ItemsCommand;
 use Hateoas\HateoasBuilder;
 use Symfony\Component\HttpFoundation\Response;
 
+use App\Item\Middleware\Message\Item;
+
 /**
  * The Main and Only Controller for the Test Application
  *
@@ -72,6 +74,14 @@ class IndexController extends AbstractController
     public function index()
     {
         $items = $this->hateoas->serialize($this->command->getAll(), 'json');
+        
+        $this->dispatchMessage(
+            (new Item)
+                ->setAction('list')
+                ->setCorrelationId(
+                    \Ramsey\Uuid\Uuid::uuid4()
+                )
+            );
         
         return new Response($items, Response::HTTP_OK, $this->defHeaders);
     }

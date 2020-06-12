@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation\ {
 /**
  * Item Message
  * 
- * @AccessorOrder("custom", custom = {"arrivalTimestamp", "id" , "correlationId", "name", "details"})
+ * @AccessorOrder("custom", custom = {"arrivalTimestamp", "id" , "correlationId", "name", "details", "action"})
  * @author mosta <info@manonworld.de>
  */
 class Item {
@@ -51,6 +51,22 @@ class Item {
      * @property string $details
      */
     private string $details = '';
+    
+    /**
+     * 
+     * @Type("string")
+     * @property string $action
+     */
+    private string $action = '';
+    
+    public function getAction(): string {
+        return $this->action;
+    }
+
+    public function setAction(string $action) {
+        $this->action = $action;
+        return $this;
+    }
     
     public function getArrivalTimestamp(): string
     {
