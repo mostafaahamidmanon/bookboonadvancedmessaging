@@ -21,7 +21,11 @@ final class Version20200610065141 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
+        $this->addSql("CREATE EXTENSION pipeline_kafka;");
+        $this->addSql("SELECT pipeline_kafka.add_broker('kafka:9092');");
+        $this->addSql("CREATE STREAM item_stream (payload json);");
+        $this->addSql("CREATE CONTINUOUS VIEW item_stream_view AS SELECT arrival_timestamp FROM item_stream;");
+        $this->addSql("SELECT pipeline_kafka.consume_begin('item-topic', 'item_stream', format := 'json');");
         $this->addSql('CREATE TABLE item (correlation_id UUID NOT NULL, arrival_timestamp VARCHAR(255) NOT NULL, item_name VARCHAR(255) NOT NULL, item_details TEXT NOT NULL, PRIMARY KEY(correlation_id))');
         $this->addSql('COMMENT ON COLUMN item.correlation_id IS \'(DC2Type:uuid)\'');
         $this->addSql('CREATE TABLE messenger_messages (id BIGSERIAL NOT NULL, body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, available_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, delivered_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');

@@ -5,6 +5,7 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
         "doctrine/doctrine-migrations-bundle": "^2.1",
         "enqueue/amqp-bunny": "^0.10.1",
         "enqueue/async-event-dispatcher": "^0.10.1",
@@ -27,7 +28,6 @@
         "willdurand/hateoas": "^3.6"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/browser-kit": "5.1.*",
         "symfony/css-selector": "5.1.*",
         "symfony/maker-bundle": "^1.19",

@@ -11,15 +11,15 @@ namespace App\Item\Middleware\Query;
 use App\Item\Middleware\Query\AbstractItemQuery;
 
 /**
- * Gets all items
+ * Finds an item by ID
  *
  * @author mosta <info@manonworld.de>
  */
-class GetItemsQuery extends AbstractItemQuery {
+class FindItemQuery extends AbstractItemQuery {
     
-    public function getAll()
+    public function find(string $id)
     {
-        return $this->repo->findAll();
+        return $this->repo->find($id);
     }
     
 }

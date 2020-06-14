@@ -13,6 +13,7 @@ use App\Item\Middleware\Message\Item;
 use App\Item\Infrastructure\KafkaPublisher;
 use App\Item\Middleware\Handler\ItemHandlerException;
 use JMS\Serializer\SerializerBuilder;
+use App\Item\ValueObject\ItemEnqueue;
 
 /**
  * Routes between actions on item (CRUD operations)
@@ -33,7 +34,6 @@ class ItemHandler implements MessageHandlerInterface {
         try {
             
             $context = $this->publisher->createContext();
-
             $serializer = SerializerBuilder::create()->build();
             $serItem = $serializer->serialize($item, 'json');
 
@@ -41,14 +41,8 @@ class ItemHandler implements MessageHandlerInterface {
             $fooTopic = $context->createTopic('item-topic');
             $context->createProducer()->send($fooTopic, $message);
             
-            echo "\nNew Message: " . $serItem . "\n";
-            
-            // TODO: inform the PipelineDB stream
-            
         } catch (\Exception $e) {
-            
             throw new ItemHandlerException($e->getMessage(), 500, $e);
-            
         }
     }
     

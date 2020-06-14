@@ -15,8 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Item\Middleware\Command\ItemsCommand;
 use Hateoas\HateoasBuilder;
 use Symfony\Component\HttpFoundation\Response;
-
 use App\Item\Middleware\Message\Item;
+use Ramsey\Uuid\Uuid;
+use JMS\Serializer\SerializerBuilder;
+use App\Item\Entity\Item as DBItem;
 
 /**
  * The Main and Only Controller for the Test Application
@@ -40,6 +42,12 @@ class IndexController extends AbstractController
     
     /**
      *
+     * @property Item $item
+     */
+    private Item $item;
+    
+    /**
+     *
      * @property array $defHeaders
      */
     private array $defHeaders = [
@@ -57,10 +65,12 @@ class IndexController extends AbstractController
      */
     public function __construct(
         RequestStack $request,
-        ItemsCommand $command
+        ItemsCommand $command,
+        Item $item
     ){
         $this->request  = $request;
         $this->command  = $command;
+        $this->item     = $item;
         $this->hateoas  = HateoasBuilder::create()->build();
     }
     
@@ -76,14 +86,36 @@ class IndexController extends AbstractController
         $items = $this->hateoas->serialize($this->command->getAll(), 'json');
         
         $this->dispatchMessage(
-            (new Item)
+            $this->item
                 ->setAction('list')
                 ->setCorrelationId(
-                    \Ramsey\Uuid\Uuid::uuid4()
+                    Uuid::uuid4()
                 )
             );
         
         return new Response($items, Response::HTTP_OK, $this->defHeaders);
+    }
+    
+    /**
+     * 
+     * Finds an Item
+     * 
+     * @Route("/{id}", methods={"GET"})
+     * @param UuidInterface $id
+     */
+    public function find(DBItem $item)
+    {
+        $this->dispatchMessage($this->item
+                ->setAction('find')
+                ->setCorrelationId(
+                    $item->getCorrelationId()
+                )
+                ->setDetails($item->getItemDetails())
+                ->setName($item->getItemName()));
+        
+        $item = $this->hateoas->serialize($item, 'json');
+        
+        return new Response($item, Response::HTTP_OK, $this->defHeaders);
     }
     
 }

@@ -36,6 +36,11 @@ RUN pecl channel-update pecl.php.net \
     && rm -rf /librdkafka \
     && apk del $BUILD_DEPS
 
+# XDebug
+RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl install xdebug-2.9.6 \
+    && docker-php-ext-enable xdebug
+
 # Set the default work directory
 WORKDIR /app
 

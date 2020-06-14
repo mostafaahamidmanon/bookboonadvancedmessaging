@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation\ {
 /**
  * Item Message
  * 
- * @AccessorOrder("custom", custom = {"arrivalTimestamp", "id" , "correlationId", "name", "details", "action"})
+ * @AccessorOrder("custom", custom = {"arrivalTimestamp", "correlationId", "name", "details", "action"})
  * @author mosta <info@manonworld.de>
  */
 class Item {

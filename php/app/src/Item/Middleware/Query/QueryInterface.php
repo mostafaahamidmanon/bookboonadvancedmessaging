@@ -8,18 +8,8 @@
 
 namespace App\Item\Middleware\Query;
 
-use App\Item\Middleware\Query\AbstractItemQuery;
-
 /**
- * Gets all items
  *
  * @author mosta <info@manonworld.de>
  */
-class GetItemsQuery extends AbstractItemQuery {
-    
-    public function getAll()
-    {
-        return $this->repo->findAll();
-    }
-    
-}
+interface QueryInterface {  }

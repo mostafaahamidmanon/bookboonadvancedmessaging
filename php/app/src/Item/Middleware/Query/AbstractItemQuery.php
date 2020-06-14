@@ -9,19 +9,20 @@
 namespace App\Item\Middleware\Query;
 
 use App\Item\Repository\ItemRepository;
+use App\Item\Middleware\Query\QueryInterface;
 
 /**
  * Description of AbstractItemQuery
  *
  * @author mosta <info@manonworld.de>
  */
-class AbstractItemQuery {
+class AbstractItemQuery implements QueryInterface {
     
     /**
      *
-     * @var ItemRepository $repo
+     * @var ItemRepository | null $repo
      */
-    protected ItemRepository $repo;
+    protected ?ItemRepository $repo = null;
     
     /**
      * 
