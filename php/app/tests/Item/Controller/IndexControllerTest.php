@@ -60,12 +60,17 @@ namespace App\Tests\Item\Controller {
                     );
         }
 
+        /**
+         * Tests if create() in controller is returning 201 response
+         * 
+         * @covers App\Item\Controller\IndexController::create
+         */
         public function testIfCreateItemResponseCodeIs201()
         {
-            $msg = $this->message->addForm([
-                'itemName' => $this->faker->firstName,
-                'itemDetails' => $this->faker->sentence(3)
-            ]);
+            $msg = $this->message->append(json_encode([
+                'name' => $this->faker->firstName,
+                'details' => $this->faker->sentence(3)
+            ]));
             
             $headers = [
                 'Content-Type' => 'application/json'
@@ -73,13 +78,11 @@ namespace App\Tests\Item\Controller {
             
             $request = new \http\Client\Request('POST', 'https://localhost:8000/', $headers, $msg);
             
+            $request->setBody($msg);
+            
             parent::$peclClient->enqueue($request)->send();
             
             $response = parent::$peclClient->getResponse();
-            
-            print_r($response->getInfo());
-            
-            exit;
             
             $this->assertEquals(
                         Response::HTTP_CREATED, 
