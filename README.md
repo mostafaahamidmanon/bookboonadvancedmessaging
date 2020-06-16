@@ -30,6 +30,39 @@ Installation
 
 Point your browser to ``` https://manondomain.wip:8000/ ```
 
+``` make consume ```
+
+
+
+Endpoints:
+-----------
+
+URL: ``` / ```
+
+METHOD: ``` GET ```
+
+Listing Items
+
+
+____________________
+
+URL: ``` / ```
+
+METHOD: ``` POST ```
+
+PAYLOAD: ``` {"name": "testname", "details": "details"} ```
+
+Creates an Item
+
+
+____________________
+
+URL: ``` /{id} ```
+
+METHOD: ``` GET ```
+
+Finds an Item
+
 
 
 Destruction
