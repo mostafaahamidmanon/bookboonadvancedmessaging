@@ -10,6 +10,8 @@ namespace App\Item\Middleware\Command;
 
 use App\Item\Middleware\Query\GetItemsQuery;
 use App\Item\Middleware\Query\FindItemQuery;
+use App\Item\Middleware\Query\CreateItemQuery;
+use App\Item\Entity\Item;
 
 /**
  * Calls for Listing Items
@@ -31,17 +33,28 @@ class ItemsCommand {
     private FindItemQuery $findItem;
     
     /**
+     *
+     * @var CreateItemQuery $createItem
+     */
+    private CreateItemQuery $createItem;
+    
+    /**
      * 
      * @param GetItemsQuery $getItems
      */
-    public function __construct(GetItemsQuery $getItems, FindItemQuery $findItem) {
+    public function __construct(
+        GetItemsQuery $getItems, 
+        FindItemQuery $findItem, 
+        CreateItemQuery $createItem
+    ) {
         $this->getItems     = $getItems;
         $this->findItem     = $findItem;
+        $this->createItem   = $createItem;
     }
     
-    public function create()
+    public function create(Item $item)
     {
-        
+        $this->createItem->create($item);
     }
     
     public function getAll()

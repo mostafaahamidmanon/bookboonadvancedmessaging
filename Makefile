@@ -22,6 +22,10 @@ seed:
 	@echo "Seeding Data...";
 	@docker exec -it chronos-pipeline_php_1 bin/console doctrine:fixtures:load --group=item;
 
+consume:
+	@echo "Consuming Messages...";
+	@docker exec -it chronos-pipeline_php_1 bin/console messenger:consume async;
+
 test:
 	@echo "Running Tests...";
 	@docker exec -it chronos-pipeline_php_1 bin/phpunit --coverage-text

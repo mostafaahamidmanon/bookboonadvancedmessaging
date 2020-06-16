@@ -25,7 +25,7 @@ services:
       - kafka
       
   kafka-manager:
-    image: dockerkafka/kafka-manager
+    image: kafkamanager/kafka-manager:latest
     env_file:
       - ./env/kafka_manager.env
     ports:

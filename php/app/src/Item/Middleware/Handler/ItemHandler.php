@@ -38,8 +38,10 @@ class ItemHandler implements MessageHandlerInterface {
             $serItem = $serializer->serialize($item, 'json');
 
             $message = $context->createMessage($serItem);
-            $fooTopic = $context->createTopic('item-topic');
-            $context->createProducer()->send($fooTopic, $message);
+            $itemTopic = $context->createTopic('item-topic');
+            $context->createProducer()->send($itemTopic, $message);
+            
+            print $serItem . "\n";
             
         } catch (\Exception $e) {
             throw new ItemHandlerException($e->getMessage(), 500, $e);

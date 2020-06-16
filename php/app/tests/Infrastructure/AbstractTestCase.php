@@ -35,6 +35,18 @@ class AbstractTestCase extends WebTestCase
     protected static $client;
     
     /**
+     *
+     * @var \http\Client | null $peclClient
+     */
+    protected static ?\http\Client $peclClient = null;
+    
+    /**
+     *
+     * @var http\Message\Body $message
+     */
+    protected ?\http\Message\Body $message = null;
+    
+    /**
      * Sets up the test
      * 
      * @return void
@@ -49,6 +61,14 @@ class AbstractTestCase extends WebTestCase
         {
             self::$kernel = static::bootKernel();
         }
+        
+        $peclClientId = random_bytes(8);
+        
+        self::$peclClient = new \http\Client('curl', $peclClientId);
+        
+        $this->faker = \Faker\Factory::create();
+        
+        $this->message = new \http\Message\Body();
     }
     
     /**
@@ -60,9 +80,10 @@ class AbstractTestCase extends WebTestCase
     public function tearDown(): void
     {
         
-        self::$client = null;
-        self::$kernel = null;
-        
+        self::$client       = null;
+        self::$kernel       = null;
+        $this->message      = null;
+        self::$peclClient   = null;
         parent::tearDown();
     }
     

@@ -6,74 +6,103 @@
  * and open the template in the editor.
  */
 
-namespace App\Tests\Item\Controller;
+namespace App\Tests\Item\Controller {
 
-use App\Tests\Infrastructure\AbstractTestCase;
-use Symfony\Component\HttpFoundation\Response;
-
-/**
- * Description of IndexControllerTest
- * 
- * @covers App\Item\Controller\IndexController
- *
- * @author mosta <info@manonworld.de>
- */
-class IndexControllerTest extends AbstractTestCase {
+    use App\Tests\Infrastructure\AbstractTestCase;
+    use Symfony\Component\HttpFoundation\Response;
 
     /**
-     * Tests if index() in controller is returning 200 response
+     * Description of IndexControllerTest
      * 
-     * @covers App\Item\Controller\IndexController::index
+     * @covers App\Item\Controller\IndexController
+     *
+     * @author mosta <info@manonworld.de>
      */
-    public function testIfListItemsResponseCodeIs200() 
-    {
-        parent::$client->request('GET', '/');
+    class IndexControllerTest extends AbstractTestCase {
 
-        $this->assertEquals(
-                Response::HTTP_OK,
-                parent::$client->getResponse()->getStatusCode()
-        );
-    }
+        /**
+         * Tests if index() in controller is returning 200 response
+         * 
+         * @covers App\Item\Controller\IndexController::index
+         */
+        public function testIfListItemsResponseCodeIs200() 
+        {
+            parent::$client->request('GET', '/');
 
-    /**
-     * Tests if find() in controller is returning 200 response
-     * 
-     * @covers App\Item\Controller\IndexController::find
-     */
-    public function testIfFindItemResponseCodeIs200() 
-    {
-        parent::$client->request('GET', '/');
-
-        $res = parent::$client->getResponse()->getContent();
-
-        $resObj = json_decode($res);
-
-        $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
-
-        $url = '/' . $this->strReplaceN('-', '', $impl, 4);
-
-        parent::$client->request('GET', $url);
-
-        $this->assertEquals(
-                    Response::HTTP_OK, 
+            $this->assertEquals(
+                    Response::HTTP_OK,
                     parent::$client->getResponse()->getStatusCode()
-                );
-    }
+            );
+        }
 
-    /**
-     * 
-     * Replaces N occurrence of a string
-     * 
-     * @param string $search
-     * @param string $replace
-     * @param string $subject
-     * @param int $occurrence
-     * @return string
-     */
-    private function strReplaceN(string $search, string $replace, string $subject, int $occurrence): string
-    {
-        $search = preg_quote($search);
-        return preg_replace("/^((?:(?:.*?$search){" . --$occurrence . "}.*?))$search/i", "$1$replace", $subject);
-    }
+        /**
+         * Tests if find() in controller is returning 200 response
+         * 
+         * @covers App\Item\Controller\IndexController::find
+         */
+        public function testIfFindItemResponseCodeIs200() 
+        {
+            parent::$client->request('GET', '/');
 
+            $res = parent::$client->getResponse()->getContent();
+
+            $resObj = json_decode($res);
+
+            $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
+
+            $url = '/' . $this->strReplaceN('-', '', $impl, 4);
+
+            parent::$client->request('GET', $url);
+
+            $this->assertEquals(
+                        Response::HTTP_OK, 
+                        parent::$client->getResponse()->getStatusCode()
+                    );
+        }
+
+        public function testIfCreateItemResponseCodeIs201()
+        {
+            $msg = $this->message->addForm([
+                'itemName' => $this->faker->firstName,
+                'itemDetails' => $this->faker->sentence(3)
+            ]);
+            
+            $headers = [
+                'Content-Type' => 'application/json'
+            ];
+            
+            $request = new \http\Client\Request('POST', 'https://localhost:8000/', $headers, $msg);
+            
+            parent::$peclClient->enqueue($request)->send();
+            
+            $response = parent::$peclClient->getResponse();
+            
+            print_r($response->getInfo());
+            
+            exit;
+            
+            $this->assertEquals(
+                        Response::HTTP_CREATED, 
+                        $response->getResponseCode()
+                    );
+        }
+
+        /**
+         * 
+         * Replaces N occurrence of a string
+         * 
+         * @param string $search
+         * @param string $replace
+         * @param string $subject
+         * @param int $occurrence
+         * @return string
+         */
+        private function strReplaceN(string $search, string $replace, string $subject, int $occurrence): string
+        {
+            $search = preg_quote($search);
+
+            return preg_replace("/^((?:(?:.*?$search){" . --$occurrence . "}.*?))$search/i", "$1$replace", $subject);
+        }
+
+    }
 }

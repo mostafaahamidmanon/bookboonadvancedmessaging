@@ -6,10 +6,21 @@
 FROM php:7.4-fpm-alpine
 
 # Build Dependencies
-ENV BUILD_DEPS 'autoconf git gcc g++ make bash'
+ENV BUILD_DEPS 'git gcc g++ make zip'
 
 # Install Build Dependencies
 RUN apk --no-cache upgrade && apk add $BUILD_DEPS
+
+# Install PECL HTTP dependencies (Persistent HTTP Connections)
+RUN set -ex \
+  && apk add --no-cache bash build-base wget curl icu-dev m4 autoconf libtool imagemagick imagemagick-dev zlib zlib-dev libcurl curl-dev libevent libevent-dev libidn libidn-dev \
+  && printf "\n" | pecl install raphf propro \
+  && docker-php-ext-enable raphf propro \
+  && printf "\n" | pecl install pecl_http \
+  && echo -e "extension=raphf.so\nextension=propro.so\nextension=http.so" > /usr/local/etc/php/conf.d/docker-php-ext-http.ini \
+  && rm -rf /usr/local/etc/php/conf.d/docker-php-ext-raphf.ini \
+  && rm -rf /usr/local/etc/php/conf.d/docker-php-ext-propro.ini
+
 
 # Librdkafka for kafka integration
 RUN git clone --depth 1 --branch v1.4.2 https://github.com/edenhill/librdkafka.git \
