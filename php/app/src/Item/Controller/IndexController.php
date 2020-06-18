@@ -19,7 +19,8 @@ use App\Item\Middleware\Message\Item;
 use Ramsey\Uuid\Uuid;
 use JMS\Serializer\SerializerBuilder;
 use App\Item\Entity\Item as DBItem;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Item\Infrastructure\AppSerializer;
+use App\Item\Infrastructure\ItemValidator;
 
 /**
  * The Main and Only Controller for the Test Application
@@ -31,9 +32,9 @@ class IndexController extends AbstractController
     
     /**
      *
-     * @property RequestStack $request
+     * @property string $request
      */
-    private RequestStack $request;
+    private string $request;
     
     /**
      *
@@ -46,6 +47,18 @@ class IndexController extends AbstractController
      * @property Item $item
      */
     private Item $item;
+    
+    /**
+     *
+     * @var AppSerializer $serializer
+     */
+    private AppSerializer $serializer;
+    
+    /**
+     *
+     * @var ItemValidator $validator
+     */
+    private ItemValidator $validator;
     
     /**
      *
@@ -64,8 +77,6 @@ class IndexController extends AbstractController
         'details' => 'request error'
     ];
     
-    
-    
     /**
      * 
      * New Instance
@@ -73,16 +84,22 @@ class IndexController extends AbstractController
      * @param RequestStack $request
      * @param ItemsCommand $command
      * @param Item $item
+     * @param AppSerializer $serializer Application Serializer
+     * @param ItemValidator $validator Item Validator
      */
     public function __construct(
         RequestStack $request,
         ItemsCommand $command,
-        Item $item
+        Item $item,
+        AppSerializer $serializer,
+        ItemValidator $validator
     ){
-        $this->request      = $request;
-        $this->command      = $command;
-        $this->item         = $item;
-        $this->hateoas      = HateoasBuilder::create()->build();
+        $this->request          = $request->getCurrentRequest()->getContent();
+        $this->command          = $command;
+        $this->item             = $item;
+        $this->hateoas          = HateoasBuilder::create()->build();
+        $this->serializer       = $serializer;
+        $this->validator        = $validator;
     }
     
     /**
@@ -96,13 +113,7 @@ class IndexController extends AbstractController
     {
         $items = $this->hateoas->serialize($this->command->getAll(), 'json');
         
-        $this->dispatchMessage(
-            $this->item
-                ->setAction('list')
-                ->setCorrelationId(
-                    Uuid::uuid4()
-                )
-            );
+        $this->dispatchMessage($this->item->setAction('list')->setCorrelationId(Uuid::uuid4()));
         
         return new Response($items, Response::HTTP_OK, $this->defHeaders);
     }
@@ -117,11 +128,9 @@ class IndexController extends AbstractController
      */
     public function find(DBItem $item)
     {
-        $this->dispatchMessage($this->item
-                ->setAction('find')
-                ->setCorrelationId(
-                    $item->getCorrelationId()
-                )
+        $this->dispatchMessage($this->item->setAction('find')
+                ->setCorrelationId($item
+                ->getCorrelationId())
                 ->setDetails($item->getItemDetails())
                 ->setName($item->getItemName()));
         
@@ -137,36 +146,48 @@ class IndexController extends AbstractController
      * @Route("/", methods={"POST"})
      * @return Response
      */
-    public function create(ValidatorInterface $validator)
+    public function create()
+    {   
+        $item = $this->serializer->getSerializer()->deserialize($this->request, DBItem::class, 'json');
+        
+        $errors = $this->validator->validate($item);
+        if($errors){
+            return $this->returnValidationResponse($errors);
+        }
+        
+        $this->command->upsert($item);
+        
+        $message = $this->item->setAction('create')->setName($item->getItemName())->setDetails($item->getItemDetails());
+        $this->dispatchMessage($message);
+        
+        return new Response($this->hateoas->serialize($item, 'json'), Response::HTTP_CREATED, $this->defHeaders);
+    }
+    
+    /**
+     * 
+     * Updates an Item
+     * 
+     * @param DBItem $item Item DB Entity
+     * @Route("/{id}", methods={"PUT"})
+     * @return Response
+     */
+    public function update(DBItem $item)
     {
-        $req = $this->request->getCurrentRequest()->getContent();
+        $newItem = $this->serializer->getSerializer()->deserialize($this->request, DBItem::class, 'json');
         
-        $requestData = json_decode($req);
-        if(!(json_last_error() == JSON_ERROR_NONE)){
-            return $this->returnValidationResponse();
+        $newItem->setCorrelationId($item->getCorrelationId());
+        
+        $errors = $this->validator->validate($newItem);
+        if($errors){
+            return $this->returnValidationResponse($errors);
         }
         
-        $item = (new DBItem)
-                ->setItemName($requestData->name)
-                ->setItemDetails($requestData->details);
+        $this->command->upsert($newItem);
         
-        $errors = $validator->validate($item);
-        if(count($errors) > 0){
-            return $this->returnValidationResponse((string) $errors);
-        }
+        $message = $this->item->setAction('update')->setName($newItem->getItemName())->setDetails($newItem->getItemDetails());
+        $this->dispatchMessage($message);
         
-        $this->command->create($item);
-        
-        $this->dispatchMessage(
-                $this->item->setAction('create')
-                    ->setName($item->getItemName())
-                    ->setDetails($item->getItemDetails())
-                );
-        
-        return new Response(
-                $this->hateoas->serialize($item, 'json'), 
-                Response::HTTP_CREATED, $this->defHeaders
-                );
+        return new Response($this->hateoas->serialize($newItem, 'json'), Response::HTTP_ACCEPTED, $this->defHeaders);
     }
     
     /**

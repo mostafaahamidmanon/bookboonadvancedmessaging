@@ -29,10 +29,7 @@ namespace App\Tests\Item\Controller {
         {
             parent::$client->request('GET', '/');
 
-            $this->assertEquals(
-                    Response::HTTP_OK,
-                    parent::$client->getResponse()->getStatusCode()
-            );
+            $this->assertEquals(Response::HTTP_OK, parent::$client->getResponse()->getStatusCode());
         }
 
         /**
@@ -54,10 +51,7 @@ namespace App\Tests\Item\Controller {
 
             parent::$client->request('GET', $url);
 
-            $this->assertEquals(
-                        Response::HTTP_OK, 
-                        parent::$client->getResponse()->getStatusCode()
-                    );
+            $this->assertEquals(Response::HTTP_OK, parent::$client->getResponse()->getStatusCode());
         }
 
         /**
@@ -68,15 +62,17 @@ namespace App\Tests\Item\Controller {
         public function testIfCreateItemResponseCodeIs201()
         {
             $msg = $this->message->append(json_encode([
-                'name' => $this->faker->firstName,
-                'details' => $this->faker->sentence(3)
+                'itemName' => $this->faker->firstName,
+                'itemDetails' => $this->faker->sentence(3)
             ]));
             
             $headers = [
                 'Content-Type' => 'application/json'
             ];
             
-            $request = new \http\Client\Request('POST', 'https://localhost:8000/', $headers, $msg);
+            $url = 'https://localhost:8000/';
+            
+            $request = new \http\Client\Request('POST', $url, $headers);
             
             $request->setBody($msg);
             
@@ -84,10 +80,44 @@ namespace App\Tests\Item\Controller {
             
             $response = parent::$peclClient->getResponse();
             
-            $this->assertEquals(
-                        Response::HTTP_CREATED, 
-                        $response->getResponseCode()
-                    );
+            $this->assertEquals(Response::HTTP_CREATED, $response->getResponseCode());
+        }
+        
+        /**
+         * Tests if create() in controller is returning 201 response
+         * 
+         * @covers App\Item\Controller\IndexController::create
+         */
+        public function testIfUpdateItemResponseCodeIs202()
+        {
+            $msg = $this->message->append(json_encode([
+                'itemName' => $this->faker->firstName,
+                'itemDetails' => $this->faker->sentence(3)
+            ]));
+            
+            $headers = [
+                'Content-Type' => 'application/json'
+            ];
+            
+            parent::$client->request('GET', '/');
+
+            $res = parent::$client->getResponse()->getContent();
+
+            $resObj = json_decode($res);
+
+            $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
+
+            $url = 'https://localhost:8000/' . $this->strReplaceN('-', '', $impl, 4);
+
+            $request = new \http\Client\Request('PUT', $url, $headers);
+            
+            $request->setBody($msg);
+            
+            parent::$peclClient->enqueue($request)->send();
+            
+            $response = parent::$peclClient->getResponse();
+            
+            $this->assertEquals(Response::HTTP_ACCEPTED, $response->getResponseCode());
         }
 
         /**

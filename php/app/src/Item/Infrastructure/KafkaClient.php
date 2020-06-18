@@ -12,11 +12,11 @@ use Enqueue\RdKafka\RdKafkaConnectionFactory;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 /**
- * Sends Messages to Kafka
+ * Connects to Kafka
  *
  * @author mosta <info@manonworld.de>
  */
-class KafkaPublisher {
+class KafkaClient {
     
     private RdKafkaConnectionFactory $conn;
     

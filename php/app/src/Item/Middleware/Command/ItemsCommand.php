@@ -10,7 +10,7 @@ namespace App\Item\Middleware\Command;
 
 use App\Item\Middleware\Query\GetItemsQuery;
 use App\Item\Middleware\Query\FindItemQuery;
-use App\Item\Middleware\Query\CreateItemQuery;
+use App\Item\Middleware\Query\UpsertItemQuery;
 use App\Item\Entity\Item;
 
 /**
@@ -34,9 +34,9 @@ class ItemsCommand {
     
     /**
      *
-     * @var CreateItemQuery $createItem
+     * @var UpsertItemQuery $upsertItem
      */
-    private CreateItemQuery $createItem;
+    private UpsertItemQuery $upsertItem;
     
     /**
      * 
@@ -45,16 +45,16 @@ class ItemsCommand {
     public function __construct(
         GetItemsQuery $getItems, 
         FindItemQuery $findItem, 
-        CreateItemQuery $createItem
+        UpsertItemQuery $upsertItem
     ) {
         $this->getItems     = $getItems;
         $this->findItem     = $findItem;
-        $this->createItem   = $createItem;
+        $this->upsertItem   = $upsertItem;
     }
     
-    public function create(Item $item)
+    public function upsert(Item $item)
     {
-        $this->createItem->create($item);
+        $this->upsertItem->upsert($item);
     }
     
     public function getAll()
@@ -65,11 +65,6 @@ class ItemsCommand {
     public function find(string $id)
     {
         return $this->findItem->find($id);
-    }
-    
-    public function update()
-    {
-        
     }
     
     public function delete()

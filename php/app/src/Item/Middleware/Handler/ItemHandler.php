@@ -10,7 +10,7 @@ namespace App\Item\Middleware\Handler;
 
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use App\Item\Middleware\Message\Item;
-use App\Item\Infrastructure\KafkaPublisher;
+use App\Item\Infrastructure\KafkaClient;
 use App\Item\Middleware\Handler\ItemHandlerException;
 use JMS\Serializer\SerializerBuilder;
 use App\Item\ValueObject\ItemEnqueue;
@@ -22,18 +22,18 @@ use App\Item\ValueObject\ItemEnqueue;
  */
 class ItemHandler implements MessageHandlerInterface {
     
-    private KafkaPublisher $publisher;
+    private KafkaClient $client;
     
-    public function __construct(KafkaPublisher $publisher)
+    public function __construct(KafkaClient $client)
     {
-        $this->publisher = $publisher;
+        $this->client = $client;
     }
     
     public function __invoke(Item $item)
     {
         try {
             
-            $context = $this->publisher->createContext();
+            $context = $this->client->createContext();
             $serializer = SerializerBuilder::create()->build();
             $serItem = $serializer->serialize($item, 'json');
 

@@ -12,13 +12,13 @@ use App\Item\Middleware\Query\AbstractItemQuery;
 use App\Item\Entity\Item;
 
 /**
- * Creates an item
+ * Updates or Inserts an item
  *
  * @author mosta <info@manonworld.de>
  */
-class CreateItemQuery extends AbstractItemQuery {
+class UpsertItemQuery extends AbstractItemQuery {
     
-    public function create(Item $item): Item
+    public function upsert(Item $item): Item
     {
         $this->repo->entityManager->persist($item);
         $this->repo->entityManager->flush();
