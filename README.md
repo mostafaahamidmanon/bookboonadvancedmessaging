@@ -1,19 +1,30 @@
-BookBoon.com (r) Advanced Messaging using PHP7 and Symfony5
+BookBoon.com (r) Advanced Messaging using PHP 7 and Symfony 5
 -------------------------------------------------------------
 
 Sample messaging application
 
+
 Tech stack:
+-----------
 
-Symfony5
+Symfony 5
 
-PipelineDB
+Pipeline DB
 
-PostgreSQL11
+PostgreSQL 11
 
 Kafka
 
+Kafka Manager
+
 ZooKeeper
+
+PHP Unit
+
+Enqueue Kafka
+
+Messenger Component
+
 
 The link to the e-book will be published soon on BookBoon.com (r) website
 
