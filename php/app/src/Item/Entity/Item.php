@@ -13,6 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Annotations as OA;
 
 /**
  * Item entity
@@ -22,6 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * 
  * @ORM\Entity(repositoryClass="App\Item\Repository\ItemRepository")
  * @ORM\Table(name="item")
+ * 
+ * @OA\Schema()
  * 
  * @author mosta <info@manonworld.de>
  */
@@ -35,6 +38,15 @@ class Item {
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator")
      * @Assert\Uuid
      * @property ?UuidInteface|null $correlationId
+     * 
+     * 
+     * @OA\Property(
+     *   property="correlationId",
+     *   type="Ramsey\Uuid\UuidInterface",
+     *   description="The identifier of the item"
+     * )
+     * 
+     * 
      */
     private ?UuidInterface $correlationId = null;
     
@@ -43,6 +55,14 @@ class Item {
      * @ORM\Column(type="string", length=255)
      * @Assert\DateTime
      * @property string|null $arrivalTime
+     * 
+     * @OA\Property(
+     *      property="arrivalTimestamp",
+     *      type="string",
+     *      description="Message arrival timestamp into PipelineDB from Kafka"
+     * )
+     * 
+     * 
      */
     private ?string $arrivalTimestamp = '';
     
@@ -59,6 +79,15 @@ class Item {
      *      allowEmptyString = false
      * )
      * @property string|null $itemName 
+     * 
+     * 
+     * @OA\Property(
+     *   property="itemName",
+     *   type="string",
+     *   description="The name of the item"
+     * )
+     * 
+     * 
      */
     private ?string $itemName = '';
     
@@ -75,6 +104,15 @@ class Item {
      *      allowEmptyString = false
      * )
      * @property string|null $itemDetails
+     * 
+     * 
+     * @OA\Property(
+     *   property="itemDetails",
+     *   type="string",
+     *   description="The details about the item"
+     * )
+     * 
+     * 
      */
     private ?string $itemDetails = '';
     

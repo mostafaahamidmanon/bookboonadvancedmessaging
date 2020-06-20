@@ -27,6 +27,12 @@ namespace App\Tests\Item\Controller {
         private $headers = [
                 'Content-Type' => 'application/json'
             ];
+        
+        /**
+         *
+         * @var string $baseUrl
+         */
+        private string $baseUrl = 'https://localhost:8000/';
 
         /**
          * Tests if index() in controller is returning 200 response
@@ -69,14 +75,9 @@ namespace App\Tests\Item\Controller {
          */
         public function testIfCreateItemResponseCodeIs201()
         {
-            $msg = $this->message->append(json_encode([
-                'itemName' => $this->faker->firstName,
-                'itemDetails' => $this->faker->sentence(3)
-            ]));
+            $msg = $this->getFakeMessage();
             
-            $url = 'https://localhost:8000/';
-            
-            $request = new \http\Client\Request('POST', $url, $this->headers);
+            $request = new \http\Client\Request('POST', $this->baseUrl, $this->headers);
             
             $request->setBody($msg);
             
@@ -94,10 +95,7 @@ namespace App\Tests\Item\Controller {
          */
         public function testIfUpdateItemResponseCodeIs202()
         {
-            $msg = $this->message->append(json_encode([
-                'itemName' => $this->faker->firstName,
-                'itemDetails' => $this->faker->sentence(3)
-            ]));
+            $msg = $this->getFakeMessage();
             
             $url = $this->getUrlOfOneItem();
 
@@ -141,14 +139,28 @@ namespace App\Tests\Item\Controller {
 
             $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
 
-            $url = 'https://localhost:8000/' . $this->strReplaceN('-', '', $impl, 4);
+            $url = $this->baseUrl . $this->strReplaceN('-', '', $impl, 4);
             
             return $url;
+        }
+        
+        /**
+         * 
+         * Prepares a fake message
+         * 
+         * @return \http\Message\Body
+         */
+        private function getFakeMessage(): \http\Message\Body
+        {
+            return $this->message->append(json_encode([
+                'itemName' => $this->faker->firstName,
+                'itemDetails' => $this->faker->sentence(3)
+            ]));
         }
 
         /**
          * 
-         * Replaces N occurrence of a string
+         * Replaces the N occurrence of a string
          * 
          * @param string $search
          * @param string $replace

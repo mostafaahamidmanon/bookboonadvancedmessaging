@@ -556,5 +556,8 @@
     },
     "willdurand/hateoas": {
         "version": "3.6.0"
+    },
+    "zircote/swagger-php": {
+        "version": "3.0.4"
     }
 }

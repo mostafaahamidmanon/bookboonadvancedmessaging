@@ -30,7 +30,8 @@
         "symfony/serializer-pack": "^1.0",
         "symfony/validator": "5.1.*",
         "symfony/yaml": "5.1.*",
-        "willdurand/hateoas": "^3.6"
+        "willdurand/hateoas": "^3.6",
+        "zircote/swagger-php": "^3.0"
     },
     "require-dev": {
         "symfony/browser-kit": "5.1.*",

@@ -22,57 +22,50 @@ The link to the e-book will be published soon on BookBoon.com (r) website
 Installation
 --------------
 
-``` make install ```
+``` make ``` To display info
 
-``` make migrate ```
+``` make install ``` To install the application
 
-``` make seed ```
+``` make migrate ``` To migrate the DB
+
+``` make seed ``` To seed the DB
 
 Point your browser to ``` https://manondomain.wip:8000/ ```
 
-``` make consume ```
+
+
+Consumer
+---------
+
+``` make consume ``` To start Symfony Built-In Consumer
 
 
 
 Endpoints:
 -----------
 
-URL: ``` / ```
-
-METHOD: ``` GET ```
-
-Listing Items
-
-
-____________________
-
-URL: ``` / ```
-
-METHOD: ``` POST ```
-
-PAYLOAD: ``` {"name": "testname", "details": "details"} ```
-
-Creates an Item
-
-
-____________________
-
-URL: ``` /{id} ```
-
-METHOD: ``` GET ```
-
-Finds an Item
+Check [openapi.yml](openapi.yml)
 
 
 
 Destruction
 --------------
 
-``` make clean ```
+``` make clean ``` (Stops and removes the containers)
 
 
 
 Testing
 ---------
 
-``` make test ```
+``` make test ``` (Tests the application)
+
+
+Accessing containers:
+----------------------
+
+PHP ``` make meinphp ```
+
+Kafka ``` make meinkafka ```
+
+PipelineDB ``` make meinpipelinedb ```

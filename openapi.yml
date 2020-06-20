@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: 'BookBoon.com Advanced Messaging Using PHP7 and Symfony5'
+  contact:
+    email: info@manonworld.de
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: 'Lists items'
+      operationId: 'App\Item\Controller\IndexController::index'
+      responses:
+        '200':
+          description: 'Listing of items'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    post:
+      summary: 'Creates a new Item'
+      operationId: 'App\Item\Controller\IndexController::create'
+      responses:
+        '201':
+          description: 'Creates a new item'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+  '/{id}':
+    get:
+      summary: 'Finds an Item'
+      operationId: 'App\Item\Controller\IndexController::find'
+      responses:
+        '200':
+          description: 'Finds an item'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    put:
+      summary: 'Updates an Item'
+      operationId: 'App\Item\Controller\IndexController::update'
+      responses:
+        '202':
+          description: 'Updates an item'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    delete:
+      summary: 'Deletes an Item'
+      operationId: 'App\Item\Controller\IndexController::delete'
+      responses:
+        '204':
+          description: 'Deletes an item'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+components:
+  schemas:
+    Item:
+      properties:
+        correlationId:
+          description: 'The identifier of the item'
+          type: Ramsey\Uuid\UuidInterface
+        arrivalTimestamp:
+          description: 'Message arrival timestamp into PipelineDB from Kafka'
+          type: string
+        itemName:
+          description: 'The name of the item'
+          type: string
+        itemDetails:
+          description: 'The details about the item'
+          type: string
+      type: object

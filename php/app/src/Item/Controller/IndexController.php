@@ -21,9 +21,20 @@ use JMS\Serializer\SerializerBuilder;
 use App\Item\Entity\Item as DBItem;
 use App\Item\Infrastructure\AppSerializer;
 use App\Item\Infrastructure\ItemValidator;
+use OpenApi\Annotations as OA;
 
 /**
  * The Main and Only Controller for the Test Application
+ * 
+ * @Route("/v1.0.0")
+ * 
+ * @OA\Info(
+ *      title="BookBoon.com Advanced Messaging Using PHP7 and Symfony5",
+ *      version="1.0.0",
+ *      @OA\Contact(
+ *          email="info@manonworld.de"
+ *      )
+ * )
  *
  * @author mosta <info@manonworld.de>
  */
@@ -106,6 +117,18 @@ class IndexController extends AbstractController
      * 
      * Lists items
      * 
+     * @OA\Get(
+     *      path="/",
+     *      @OA\Response(
+     *          response="200", 
+     *          description="Listing of items",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Item")
+     *          )
+     *      )
+     * )
+     * 
      * @Route("/", methods={"GET"})
      * @return Response
      */
@@ -121,6 +144,18 @@ class IndexController extends AbstractController
     /**
      * 
      * Finds an Item
+     * 
+     * @OA\Get(
+     *      path="/{id}",
+     *      @OA\Response(
+     *          response="200", 
+     *          description="Finds an item",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Item")
+     *          )
+     *      )
+     * )
      * 
      * @Route("/{id}", methods={"GET"})
      * @param UuidInterface $id
@@ -142,6 +177,18 @@ class IndexController extends AbstractController
     /**
      * 
      * Creates a new Item
+     * 
+     * @OA\Post(
+     *      path="/",
+     *      @OA\Response(
+     *          response="201", 
+     *          description="Creates a new item",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Item")
+     *          )
+     *      )
+     * )
      * 
      * @Route("/", methods={"POST"})
      * @return Response
@@ -166,6 +213,18 @@ class IndexController extends AbstractController
     /**
      * 
      * Updates an Item
+     * 
+     * @OA\Put(
+     *      path="/{id}",
+     *      @OA\Response(
+     *          response="202", 
+     *          description="Updates an item",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Item")
+     *          )
+     *      )
+     * )
      * 
      * @param DBItem $item Item DB Entity
      * @Route("/{id}", methods={"PUT"})
@@ -193,6 +252,18 @@ class IndexController extends AbstractController
     /**
      * 
      * Deletes an Item
+     * 
+     * @OA\Delete(
+     *      path="/{id}",
+     *      @OA\Response(
+     *          response="204", 
+     *          description="Deletes an item",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/Item")
+     *          )
+     *      )
+     * )
      * 
      * @param DBItem $item Item DB Entity
      * @Route("/{id}", methods={"DELETE"})
