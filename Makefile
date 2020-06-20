@@ -26,6 +26,10 @@ consume:
 	@echo "Consuming Messages...";
 	@docker exec -it chronos-pipeline_php_1 bin/console messenger:consume async;
 
+docs:
+	@echo "Generating Docs...";
+	@docker exec -it chronos-pipeline_php_1 ./vendor/bin/openapi src/Item;
+
 test:
 	@echo "Running Tests...";
 	@docker exec -it chronos-pipeline_php_1 bin/phpunit --coverage-text;
@@ -52,9 +56,10 @@ default:
 	@echo "2. make migrate (Creates the Application Database)"
 	@echo "3. make seed (Seed the Database using Fixtures)"
 	@echo "4. make test (Runs the Application Tests)"
-	@echo "5. make clean (Uninstalls the Application)"
-	@echo "6. make meinphp (Accesses PHP Container)"
-	@echo "7. make meinkafka (Accesses Kafka Container)"
-	@echo "8. make meinpipeline (Accesses PipelineDB Container)"
+	@echo "5. make docs (Generates the documentation)"
+	@echo "6. make clean (Uninstalls the Application)"
+	@echo "7. make meinphp (Accesses PHP Container)"
+	@echo "8. make meinkafka (Accesses Kafka Container)"
+	@echo "9. make meinpipeline (Accesses PipelineDB Container)"
 	@echo ""
 	@echo ""

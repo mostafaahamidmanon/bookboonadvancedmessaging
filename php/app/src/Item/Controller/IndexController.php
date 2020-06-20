@@ -26,8 +26,6 @@ use OpenApi\Annotations as OA;
 /**
  * The Main and Only Controller for the Test Application
  * 
- * @Route("/v1.0.0")
- * 
  * @OA\Info(
  *      title="BookBoon.com Advanced Messaging Using PHP7 and Symfony5",
  *      version="1.0.0",
