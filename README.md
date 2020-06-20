@@ -85,4 +85,4 @@ PipelineDB ``` make meinpipelinedb ```
 Release Management:
 --------------------
 
-``` make release ```
+``` make release ``` (Make sure that https://github.com/liip/RMT is installed properly in your system)
