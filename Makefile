@@ -7,6 +7,7 @@ install:
 	@echo "Building Docker Containers..."
 	@docker-compose up -d --build;
 	@docker exec -it chronos-pipeline_php_1 ./start.sh;
+	@./rmt.phar init
 
 clean:
 	@echo "Cleaning Docker Containers..."
@@ -33,6 +34,11 @@ docs:
 test:
 	@echo "Running Tests...";
 	@docker exec -it chronos-pipeline_php_1 bin/phpunit --coverage-text;
+
+release:
+	@echo "Please make sure that composer is installed";
+	@echo "Creating a Release...";
+	@./rmt.phar release;
 
 meinphp:
 	@echo "Entring PHP Container...";
