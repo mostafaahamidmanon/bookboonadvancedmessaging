@@ -192,6 +192,27 @@ class IndexController extends AbstractController
     
     /**
      * 
+     * Deletes an Item
+     * 
+     * @param DBItem $item Item DB Entity
+     * @Route("/{id}", methods={"DELETE"})
+     * @return Response
+     */
+    public function delete(DBItem $item)
+    {
+        $this->command->delete($item);
+        
+        $message = $this->item->setAction('delete')
+                ->setName($item->getItemName())
+                ->setDetails($item->getItemDetails());
+        
+        $this->dispatchMessage($message);
+        
+        return new Response('', Response::HTTP_NO_CONTENT, $this->defHeaders);
+    }
+    
+    /**
+     * 
      * Emits the validation response
      * 
      * @param string|null $message

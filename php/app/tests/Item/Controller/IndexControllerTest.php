@@ -19,6 +19,14 @@ namespace App\Tests\Item\Controller {
      * @author mosta <info@manonworld.de>
      */
     class IndexControllerTest extends AbstractTestCase {
+        
+        /**
+         *
+         * @var array $headers
+         */
+        private $headers = [
+                'Content-Type' => 'application/json'
+            ];
 
         /**
          * Tests if index() in controller is returning 200 response
@@ -66,13 +74,9 @@ namespace App\Tests\Item\Controller {
                 'itemDetails' => $this->faker->sentence(3)
             ]));
             
-            $headers = [
-                'Content-Type' => 'application/json'
-            ];
-            
             $url = 'https://localhost:8000/';
             
-            $request = new \http\Client\Request('POST', $url, $headers);
+            $request = new \http\Client\Request('POST', $url, $this->headers);
             
             $request->setBody($msg);
             
@@ -84,9 +88,9 @@ namespace App\Tests\Item\Controller {
         }
         
         /**
-         * Tests if create() in controller is returning 201 response
+         * Tests if update() in controller is returning 202 response
          * 
-         * @covers App\Item\Controller\IndexController::create
+         * @covers App\Item\Controller\IndexController::update
          */
         public function testIfUpdateItemResponseCodeIs202()
         {
@@ -95,10 +99,40 @@ namespace App\Tests\Item\Controller {
                 'itemDetails' => $this->faker->sentence(3)
             ]));
             
-            $headers = [
-                'Content-Type' => 'application/json'
-            ];
+            $url = $this->getUrlOfOneItem();
+
+            $request = new \http\Client\Request('PUT', $url, $this->headers);
             
+            $request->setBody($msg);
+            
+            parent::$peclClient->enqueue($request)->send();
+            
+            $response = parent::$peclClient->getResponse();
+            
+            $this->assertEquals(Response::HTTP_ACCEPTED, $response->getResponseCode());
+        }
+        
+        /**
+         * Tests if delete() in controller is returning 204 response
+         * 
+         * @covers App\Item\Controller\IndexController::delete
+         */
+        public function testIfDeleteItemReponseCodeIs204()
+        {
+            $url = $this->getUrlOfOneItem();
+            
+            parent::$client->request('DELETE', $url);
+            
+            $code = $res = parent::$client->getResponse()->getStatusCode();
+            
+            $this->assertEquals(Response::HTTP_NO_CONTENT, $code);
+        }
+        
+        /**
+         * Sends a list items request and gets a URL of one item
+         */
+        private function getUrlOfOneItem()
+        {
             parent::$client->request('GET', '/');
 
             $res = parent::$client->getResponse()->getContent();
@@ -108,16 +142,8 @@ namespace App\Tests\Item\Controller {
             $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
 
             $url = 'https://localhost:8000/' . $this->strReplaceN('-', '', $impl, 4);
-
-            $request = new \http\Client\Request('PUT', $url, $headers);
             
-            $request->setBody($msg);
-            
-            parent::$peclClient->enqueue($request)->send();
-            
-            $response = parent::$peclClient->getResponse();
-            
-            $this->assertEquals(Response::HTTP_ACCEPTED, $response->getResponseCode());
+            return $url;
         }
 
         /**

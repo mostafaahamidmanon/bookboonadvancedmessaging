@@ -11,6 +11,7 @@ namespace App\Item\Middleware\Command;
 use App\Item\Middleware\Query\GetItemsQuery;
 use App\Item\Middleware\Query\FindItemQuery;
 use App\Item\Middleware\Query\UpsertItemQuery;
+use App\Item\Middleware\Query\DeleteItemQuery;
 use App\Item\Entity\Item;
 
 /**
@@ -39,17 +40,28 @@ class ItemsCommand {
     private UpsertItemQuery $upsertItem;
     
     /**
+     *
+     * @var DeleteItemQuery $deleteItem 
+     */
+    private DeleteItemQuery $deleteItem;
+    
+    /**
      * 
      * @param GetItemsQuery $getItems
+     * @param FindItemQuery $findItem
+     * @param UpsertItemQuery $upsertItem
+     * @param DeleteItemQuery $deleteItem
      */
     public function __construct(
         GetItemsQuery $getItems, 
         FindItemQuery $findItem, 
-        UpsertItemQuery $upsertItem
+        UpsertItemQuery $upsertItem,
+        DeleteItemQuery $deleteItem
     ) {
         $this->getItems     = $getItems;
         $this->findItem     = $findItem;
         $this->upsertItem   = $upsertItem;
+        $this->deleteItem   = $deleteItem;
     }
     
     public function upsert(Item $item)
@@ -62,13 +74,13 @@ class ItemsCommand {
         return $this->getItems->getAll();
     }
     
-    public function find(string $id)
+    public function find(string $id): Item
     {
         return $this->findItem->find($id);
     }
     
-    public function delete()
+    public function delete(Item $item): void
     {
-        
+        $this->deleteItem->delete($item);
     }
 }
