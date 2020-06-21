@@ -81,7 +81,7 @@ PHP ``` make meinphp ```
 
 Kafka ``` make meinkafka ```
 
-PipelineDB ``` make meinpipelinedb ```
+PipelineDB ``` make meinpipeline ```
 
 
 Release Management:
