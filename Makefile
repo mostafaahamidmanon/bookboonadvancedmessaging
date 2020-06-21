@@ -27,6 +27,10 @@ consume:
 	@echo "Consuming Messages...";
 	@docker exec -it chronos-pipeline_php_1 bin/console messenger:consume async;
 
+customconsume:
+	@echo "Custom Consuming Messages...";
+	@docker exec -it chronos-pipeline_php_1 bin/console app:consume:items:events;
+
 docs:
 	@echo "Generating Docs...";
 	@docker exec -it chronos-pipeline_php_1 ./vendor/bin/openapi src/Item;
@@ -62,6 +66,8 @@ default:
 	@echo "2. make migrate (Creates the Application Database)"
 	@echo "3. make seed (Seed the Database using Fixtures)"
 	@echo "4. make test (Runs the Application Tests)"
+	@echo "4. make consume (Consumes Item Messages)"
+	@echo "4. make customconsume (Consumes Item Messages with Custom Consumer)"
 	@echo "5. make docs (Generates the documentation)"
 	@echo "6. make clean (Uninstalls the Application)"
 	@echo "7. make meinphp (Accesses PHP Container)"

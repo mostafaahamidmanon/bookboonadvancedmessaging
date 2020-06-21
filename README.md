@@ -50,6 +50,8 @@ Consumer
 
 ``` make consume ``` To start Symfony Built-In Consumer
 
+``` make customconsume ``` To start the Custom Consumer
+
 
 
 Endpoints:
