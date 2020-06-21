@@ -16,7 +16,7 @@ use JMS\Serializer\SerializerBuilder;
 use App\Item\ValueObject\ItemEnqueue;
 
 /**
- * Routes between actions on item (CRUD operations)
+ * Handles Message to Be Sent using the Client
  *
  * @author mosta <info@manonworld.de>
  */

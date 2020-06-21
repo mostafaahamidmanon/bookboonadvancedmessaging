@@ -7,7 +7,7 @@ install:
 	@echo "Building Docker Containers..."
 	@docker-compose up -d --build;
 	@docker exec -it chronos-pipeline_php_1 ./start.sh;
-	@./rmt.phar init
+	@./rmt.phar init --force;
 
 clean:
 	@echo "Cleaning Docker Containers..."
