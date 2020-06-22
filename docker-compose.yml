@@ -48,3 +48,16 @@ services:
       - ./php/app:/app
     ports:
       - "8000:8000"
+      
+  grafana:
+    image: grafana/grafana:latest
+    container_name: chronos-pipeline_grafana
+    restart: unless-stopped
+    links:
+      - pipelinedb
+    env_file:
+      - ./env/grafana.env
+    ports:
+      - "3000:3000"
+      
+      
