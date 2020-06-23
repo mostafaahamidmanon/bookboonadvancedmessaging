@@ -4,11 +4,15 @@ services:
     
   zookeeper:
     image: wurstmeister/zookeeper
+    container_name: chronos-zookeeper_1
     ports:
       - "2181:2181"
       
   kafka:
     image: wurstmeister/kafka
+    container_name: chronos-kafka_1
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
     env_file:
@@ -18,6 +22,7 @@ services:
       
   pipelinedb:
     image: tkanos/pipelinedb_kafka
+    container_name: chronos-pipelinedb_1
     ports:
       - "5432:5432"
     links:
@@ -26,6 +31,7 @@ services:
       
   kafka-manager:
     image: kafkamanager/kafka-manager:latest
+    container_name: chronos-kafka-manager_1
     env_file:
       - ./env/kafka_manager.env
     ports:
@@ -51,7 +57,7 @@ services:
       
   grafana:
     image: grafana/grafana:latest
-    container_name: chronos-pipeline_grafana
+    container_name: chronos-grafana
     restart: unless-stopped
     links:
       - pipelinedb

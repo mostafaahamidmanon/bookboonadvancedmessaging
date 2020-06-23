@@ -16,7 +16,7 @@ clean:
 
 migrate:
 	@echo "Migrating the Database...";
-	@docker exec -it chronos-pipeline_pipelinedb_1 psql -U pipeline -c "CREATE DATABASE postgres ENCODING 'LATIN1' TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C';";
+	@docker exec -it chronos-pipelinedb_1 psql -U pipeline -c "CREATE DATABASE postgres ENCODING 'LATIN1' TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C';";
 	@docker exec -it chronos-pipeline_php_1 bin/console doctrine:migrations:migrate;
 
 seed:
@@ -50,11 +50,11 @@ meinphp:
 
 meinpipeline:
 	@echo "Entring in PipelineDB Container...";
-	@docker exec -it chronos-pipeline_pipelinedb_1 sh;
+	@docker exec -it chronos-pipelinedb_1 sh;
 
 meinkafka:
 	@echo "Entring in Kafka Container...";
-	@docker exec -it chronos-pipeline_kafka_1 sh;
+	@docker exec -it chronos-kafka_1 sh;
 
 default:
 	@echo ""
