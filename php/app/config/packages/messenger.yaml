@@ -1,6 +1,16 @@
 framework:
   messenger:
     failure_transport: failed
+    
+    default_bus: command.bus
+    buses:
+      command.bus:
+        middleware:
+          - validation
+          - doctrine_transaction
+      query.bus:
+        middleware:
+          - validation
 
     transports:
       async:
@@ -9,4 +19,8 @@ framework:
         dsn: "doctrine://default?queue_name=failed"
 
     routing:
-      'App\Item\Middleware\Message\Item': async
+      'App\Item\Middleware\Message\Command\CreateItemCommand': async
+      'App\Item\Middleware\Message\Command\UpdateItemCommand': async
+      'App\Item\Middleware\Message\Command\DeleteItemCommand': async
+      'App\Item\Middleware\Message\Query\ListItemQuery': async
+      'App\Item\Middleware\Message\Query\FindItemQuery': async

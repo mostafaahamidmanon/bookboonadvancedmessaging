@@ -33,13 +33,15 @@ The link to the e-book will be published soon on BookBoon.com (r) website
 Installation
 --------------
 
-``` make ``` To display info
+``` make ``` To display make commands info
 
 ``` make install ``` To install the application
 
 ``` make migrate ``` To migrate the DB
 
 ``` make seed ``` To seed the DB
+
+``` make restart ``` To restart the application inside the container and clears the cache
 
 Point your browser to ``` https://manondomain.wip:8000/ ```
 
@@ -49,8 +51,6 @@ Consumer
 ---------
 
 ``` make consume ``` To start Symfony Built-In Consumer
-
-``` make customconsume ``` To start the Custom Consumer
 
 
 

@@ -18,12 +18,10 @@ use OpenApi\Annotations as OA;
 /**
  * Item entity
  *
- * @Serializer\XmlRoot("item")
  * @Hateoas\Relation("self", href = "expr('/' ~ object.getCorrelationId())")
  * 
  * @ORM\Entity(repositoryClass="App\Item\Repository\ItemRepository")
  * @ORM\Table(name="item")
- * 
  * @OA\Schema()
  * 
  * @author mosta <info@manonworld.de>
@@ -37,9 +35,9 @@ class Item {
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidOrderedTimeGenerator")
      * @Assert\Uuid
-     * @property ?UuidInteface|null $correlationId
+     * @property ?UuidInteface|string|null $correlationId
      * 
-     * 
+     * @Serializer\Type("string")
      * @OA\Property(
      *   property="correlationId",
      *   type="Ramsey\Uuid\UuidInterface",
@@ -48,7 +46,7 @@ class Item {
      * 
      * 
      */
-    private ?UuidInterface $correlationId = null;
+    private $correlationId;
     
     /**
      *
@@ -121,7 +119,7 @@ class Item {
         return $this->arrivalTimestamp;
     }
 
-    public function getCorrelationId(): ?UuidInterface
+    public function getCorrelationId()
     {
         return $this->correlationId;
     }
@@ -142,7 +140,7 @@ class Item {
         return $this;
     }
 
-    public function setCorrelationId(?UuidInterface $correlationId)
+    public function setCorrelationId($correlationId)
     {
         $this->correlationId = $correlationId;
         return $this;

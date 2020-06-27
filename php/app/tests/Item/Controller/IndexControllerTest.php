@@ -58,10 +58,8 @@ namespace App\Tests\Item\Controller {
             $res = parent::$client->getResponse()->getContent();
 
             $resObj = json_decode($res);
-
-            $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
-
-            $url = '/' . $this->strReplaceN('-', '', $impl, 4);
+            
+            $url = '/' . reset($resObj->details)->correlation_id;
 
             parent::$client->request('GET', $url);
 
@@ -137,9 +135,7 @@ namespace App\Tests\Item\Controller {
 
             $resObj = json_decode($res);
 
-            $impl = implode('-', (array) reset($resObj)->correlation_id->fields);
-
-            $url = $this->baseUrl . $this->strReplaceN('-', '', $impl, 4);
+            $url = $this->baseUrl . reset($resObj->details)->correlation_id;
             
             return $url;
         }
@@ -156,23 +152,6 @@ namespace App\Tests\Item\Controller {
                 'itemName' => $this->faker->firstName,
                 'itemDetails' => $this->faker->sentence(3)
             ]));
-        }
-
-        /**
-         * 
-         * Replaces the N occurrence of a string
-         * 
-         * @param string $search
-         * @param string $replace
-         * @param string $subject
-         * @param int $occurrence
-         * @return string
-         */
-        private function strReplaceN(string $search, string $replace, string $subject, int $occurrence): string
-        {
-            $search = preg_quote($search);
-
-            return preg_replace("/^((?:(?:.*?$search){" . --$occurrence . "}.*?))$search/i", "$1$replace", $subject);
         }
 
     }

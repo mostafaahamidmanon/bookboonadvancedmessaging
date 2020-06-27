@@ -6,10 +6,17 @@
  * and open the template in the editor.
  */
 
-namespace App\Item\Middleware\Query;
+namespace App\Infrastructure;
 
 /**
+ * Not Found Exception
  *
  * @author mosta <info@manonworld.de>
  */
-interface QueryInterface {  }
+class NotFoundException extends \Exception {
+    
+    public function __construct() {
+        parent::__construct('Not Found', 404, $previous);
+    }
+    
+}

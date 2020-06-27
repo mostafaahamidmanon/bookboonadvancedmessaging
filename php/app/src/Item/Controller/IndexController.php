@@ -8,20 +8,17 @@
 
 namespace App\Item\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Item\Middleware\Command\ItemsCommand;
 use Hateoas\HateoasBuilder;
-use Symfony\Component\HttpFoundation\Response;
-use App\Item\Middleware\Message\Item;
-use Ramsey\Uuid\Uuid;
-use JMS\Serializer\SerializerBuilder;
-use App\Item\Entity\Item as DBItem;
-use App\Item\Infrastructure\AppSerializer;
-use App\Item\Infrastructure\ItemValidator;
 use OpenApi\Annotations as OA;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use App\ { Infrastructure\AppBus, Item\Entity\Item };
+use App\Item\Middleware\Message\Query\ { ListItemQuery, FindItemQuery };
+use Symfony\Component\ { HttpFoundation\RequestStack, Routing\Annotation\Route };
+use Symfony\Component\ { Messenger\Stamp\HandledStamp, HttpFoundation\Response };
+use App\Item\Middleware\Handler\Query\ { ListItemQueryHandler, FindItemQueryHandler };
+use App\Item\Middleware\Message\Command\ { CreateItemCommand, UpdateItemCommand, DeleteItemCommand};
+use App\Item\Middleware\Handler\Command\ { CreateItemCommandHandler, UpdateItemCommandHandler, DeleteItemCommandHandler };
 
 /**
  * The Main and Only Controller for the Test Application
@@ -47,43 +44,44 @@ class IndexController extends AbstractController
     
     /**
      *
-     * @property ItemsCommand $command
+     * @var ListItemQueryHandler $lstItmQryHndlr
      */
-    private ItemsCommand $command;
+    private ListItemQueryHandler $lstItmQryHndlr;
     
     /**
      *
-     * @property Item $item
+     * @var CreateItemCommandHandler $crtItmCmdHndlr
      */
-    private Item $item;
+    private CreateItemCommandHandler $crtItmCmdHndlr;
     
     /**
      *
-     * @var AppSerializer $serializer
+     * @var UpdateItemCommandHandler $updtItmCmdHndlr
      */
-    private AppSerializer $serializer;
+    private UpdateItemCommandHandler $updtItmCmdHndlr;
     
     /**
      *
-     * @var ItemValidator $validator
+     * @var DeleteItemCommandHandler $delItmCmdHndlr
      */
-    private ItemValidator $validator;
+    private DeleteItemCommandHandler $delItmCmdHndlr;
     
     /**
      *
-     * @property array $defHeaders
+     * @var AppBus $bus
      */
-    private array $defHeaders = [
-        'Content-Type' => 'application/json'
+    private AppBus $bus;
+    
+    /**
+     *
+     * @property array $defErr
+     */
+    private array $defErr = [
+        'status' => 'error'
     ];
     
-    /**
-     *
-     * @property array $defValidationErr
-     */
-    private array $defValidationErr = [
-        'status' => 'error',
-        'details' => 'request error'
+    private array $defRes = [
+        'status' => 'OK'
     ];
     
     /**
@@ -91,24 +89,30 @@ class IndexController extends AbstractController
      * New Instance
      * 
      * @param RequestStack $request
-     * @param ItemsCommand $command
-     * @param Item $item
-     * @param AppSerializer $serializer Application Serializer
-     * @param ItemValidator $validator Item Validator
+     * @param ListItemQueryHandler $lstItmQryHndlr List Item Query Handler
+     * @param FindItemQueryHandler $fndItmQryHndlr Find Item Query Handler
+     * @param CreateItemCommandHandler $crtItmCmdHndlr Create Item Command Handler
+     * @param UpdateItemCommandHandler $updtItmCmdHndlr Update Item Command Handler
+     * @param DeleteItemCommandHandler $delItmCmdHndlr Delete Item Command Handler
+     * @param AppBus $bus Default Message Bus
      */
     public function __construct(
         RequestStack $request,
-        ItemsCommand $command,
-        Item $item,
-        AppSerializer $serializer,
-        ItemValidator $validator
+        ListItemQueryHandler $lstItmQryHndlr,
+        FindItemQueryHandler $fndItmQryHndlr,
+        CreateItemCommandHandler $crtItmCmdHndlr,
+        UpdateItemCommandHandler $updtItmCmdHndlr,
+        DeleteItemCommandHandler $delItmCmdHndlr,
+        AppBus $bus
     ){
         $this->request          = $request->getCurrentRequest()->getContent();
-        $this->command          = $command;
-        $this->item             = $item;
         $this->hateoas          = HateoasBuilder::create()->build();
-        $this->serializer       = $serializer;
-        $this->validator        = $validator;
+        $this->lstItmQryHndlr   = $lstItmQryHndlr;
+        $this->fndItmQryHndlr   = $fndItmQryHndlr;
+        $this->crtItmCmdHndlr   = $crtItmCmdHndlr;
+        $this->updtItmCmdHndlr  = $updtItmCmdHndlr;
+        $this->delItmCmdHndlr   = $delItmCmdHndlr;
+        $this->bus              = $bus;
     }
     
     /**
@@ -131,12 +135,13 @@ class IndexController extends AbstractController
      * @return Response
      */
     public function index()
-    {
-        $items = $this->hateoas->serialize($this->command->getAll(), 'json');
+    {   
+        $envelope = $this->bus
+                ->dispatch(new ListItemQuery, $this->lstItmQryHndlr);
         
-        $this->dispatchMessage($this->item->setAction('list')->setCorrelationId(Uuid::uuid4()));
+        $handledStamp = $envelope->last(HandledStamp::class);
         
-        return new Response($items, Response::HTTP_OK, $this->defHeaders);
+        return $this->returnSuccess($handledStamp->getResult(), Response::HTTP_OK);
     }
     
     /**
@@ -159,17 +164,18 @@ class IndexController extends AbstractController
      * @param UuidInterface $id
      * @return Response
      */
-    public function find(DBItem $item)
+    public function find(string $id)
     {
-        $this->dispatchMessage($this->item->setAction('find')
-                ->setCorrelationId($item
-                ->getCorrelationId())
-                ->setDetails($item->getItemDetails())
-                ->setName($item->getItemName()));
+        try {
+            $envelope = $this->bus
+                ->dispatch(new FindItemQuery($id), $this->fndItmQryHndlr);
+        } catch (\Exception $e) {
+            return $this->returnError($e->getMessage(), $e->getCode());
+        }
+            
+        $item = $envelope->last(HandledStamp::class)->getResult();
         
-        $item = $this->hateoas->serialize($item, 'json');
-        
-        return new Response($item, Response::HTTP_OK, $this->defHeaders);
+        return $this->returnSuccess($item, Response::HTTP_OK);
     }
     
     /**
@@ -193,19 +199,16 @@ class IndexController extends AbstractController
      */
     public function create()
     {   
-        $item = $this->serializer->getSerializer()->deserialize($this->request, DBItem::class, 'json');
-        
-        $errors = $this->validator->validate($item);
-        if($errors){
-            return $this->returnValidationResponse($errors);
+        try {
+            $envelope = $this->bus
+                ->dispatch(new CreateItemCommand($this->request), $this->crtItmCmdHndlr);
+        } catch (\Exception $e) {
+            return $this->returnError($e->getMessage(), $e->getCode());
         }
-        
-        $this->command->upsert($item);
-        
-        $message = $this->item->setAction('create')->setName($item->getItemName())->setDetails($item->getItemDetails());
-        $this->dispatchMessage($message);
-        
-        return new Response($this->hateoas->serialize($item, 'json'), Response::HTTP_CREATED, $this->defHeaders);
+            
+        $item = $envelope->last(HandledStamp::class)->getResult();
+
+        return $this->returnSuccess($item, Response::HTTP_CREATED);
     }
     
     /**
@@ -224,27 +227,21 @@ class IndexController extends AbstractController
      *      )
      * )
      * 
-     * @param DBItem $item Item DB Entity
+     * @param Item $item Item DB Entity
      * @Route("/{id}", methods={"PUT"})
      * @return Response
      */
-    public function update(DBItem $item)
-    {
-        $newItem = $this->serializer->getSerializer()->deserialize($this->request, DBItem::class, 'json');
-        
-        $newItem->setCorrelationId($item->getCorrelationId());
-        
-        $errors = $this->validator->validate($newItem);
-        if($errors){
-            return $this->returnValidationResponse($errors);
+    public function update(Item $item)
+    {   
+        try {
+            $envelope = $this->bus->dispatch(new UpdateItemCommand($item, $this->request), $this->updtItmCmdHndlr);
+        } catch (\Exception $e) {
+            return $this->returnError($e->getmessage(), $e->getCode());
         }
         
-        $this->command->upsert($newItem);
+        $handledStamp = $envelope->last(HandledStamp::class);
         
-        $message = $this->item->setAction('update')->setName($newItem->getItemName())->setDetails($newItem->getItemDetails());
-        $this->dispatchMessage($message);
-        
-        return new Response($this->hateoas->serialize($newItem, 'json'), Response::HTTP_ACCEPTED, $this->defHeaders);
+        return $this->returnSuccess($handledStamp->getResult(), Response::HTTP_ACCEPTED);
     }
     
     /**
@@ -263,21 +260,19 @@ class IndexController extends AbstractController
      *      )
      * )
      * 
-     * @param DBItem $item Item DB Entity
+     * @param Item $item Item DB Entity
      * @Route("/{id}", methods={"DELETE"})
      * @return Response
      */
-    public function delete(DBItem $item)
+    public function delete(Item $item)
     {
-        $this->command->delete($item);
+        try {
+            $envelope = $this->bus->dispatch(new DeleteItemCommand($item), $this->delItmCmdHndlr);
+        } catch (\Exception $e) {
+            return $this->returnError($e->getmessage(), $e->getCode());
+        }
         
-        $message = $this->item->setAction('delete')
-                ->setName($item->getItemName())
-                ->setDetails($item->getItemDetails());
-        
-        $this->dispatchMessage($message);
-        
-        return new Response('', Response::HTTP_NO_CONTENT, $this->defHeaders);
+        return $this->json('', Response::HTTP_NO_CONTENT);
     }
     
     /**
@@ -285,15 +280,37 @@ class IndexController extends AbstractController
      * Emits the validation response
      * 
      * @param string|null $message
+     * @param int|null $code
      * @return Response
      */
-    private function returnValidationResponse(?string $message = null)
+    private function returnError(?string $message = null, ?int $code = 500)
     {
-        $message ? $validationErr = $message : $validationErr = json_encode($this->defValidationErr);
+        if($message){
+            $this->defErr['details'] = $message;
+        }
         
-        $validationErrCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+        return $this->json($this->defErr, $code);
+    }
+    
+    /**
+     * 
+     * Emits the success response
+     * 
+     * @param mixed $data
+     * @param int|null $code
+     * @return Response
+     */
+    private function returnSuccess($data, ?int $code = 200)
+    {
+        if(!empty($data) && $data) {
+            $this->defRes['details'] = $data;
+        }
         
-        return new Response($validationErr, $validationErrCode, $this->defHeaders);
+        $res = $this->hateoas->serialize($this->defRes, 'json');
+        
+        $headers = ['Content-Type' => 'application/hal+json'];
+        
+        return new Response($res, $code, $headers);
     }
     
 }

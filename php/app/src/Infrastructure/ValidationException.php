@@ -6,16 +6,16 @@
  * and open the template in the editor.
  */
 
-namespace App\Item\Infrastructure;
+namespace App\Infrastructure;
 
 /**
- * Description of KafkaConnectionException
+ * Description of ValidationException
  *
  * @author mosta <info@manonworld.de>
  */
-class KafkaConnectionException extends \Exception {
+class ValidationException extends \Exception {
     
-    public function __construct(string $message = "", int $code = 0, \Throwable $previous = NULL) 
+    public function __construct(string $message = "", int $code = 422, \Throwable $previous = NULL)
     {
         parent::__construct($message, $code, $previous);
     }

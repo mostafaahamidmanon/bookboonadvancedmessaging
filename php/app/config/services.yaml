@@ -16,3 +16,19 @@ services:
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        
+        
+    # messenger handlers
+    command_handlers:
+        namespace: App\Item\Middleware\Handler\Command\
+        resource: '%kernel.project_dir%/src/Item/Middleware/Handler/Command/*CommandHandler.php'
+        autoconfigure: false
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
+    query_handlers:
+        namespace: App\Item\Middleware\Handler\Query\
+        resource: '%kernel.project_dir%/src/Item/Middleware/Handler/Query/*QueryHandler.php'
+        autoconfigure: false
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }

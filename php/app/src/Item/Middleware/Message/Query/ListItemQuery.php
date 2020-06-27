@@ -6,20 +6,13 @@
  * and open the template in the editor.
  */
 
-namespace App\Item\Middleware\Query;
+namespace App\Item\Middleware\Message\Query;
 
-use App\Item\Middleware\Query\AbstractItemQuery;
+use App\Infrastructure\MessageInterface;
 
 /**
- * Gets all items
+ * List Item Query
  *
  * @author mosta <info@manonworld.de>
  */
-class GetItemsQuery extends AbstractItemQuery {
-    
-    public function getAll()
-    {
-        return $this->repo->findAll();
-    }
-    
-}
+class ListItemQuery implements MessageInterface {  }

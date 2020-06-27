@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Item\Infrastructure;
+namespace App\Infrastructure;
 
 use Enqueue\RdKafka\RdKafkaConnectionFactory;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
