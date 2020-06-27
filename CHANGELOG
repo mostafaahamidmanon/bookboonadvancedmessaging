@@ -1,3 +1,9 @@
+
+VERSION 1  CQRS CHANGES
+=======================
+
+   Version 1.0 - CQRS Changes
+      27/06/2020 06:39  1.0.0  initial release
 23/06/2020 01:59  6  Fixed Issues
 22/06/2020 21:41  5  Added Grafana
 21/06/2020 22:55  4  Added Custom Consumer and Hinted about RTM in the readme
